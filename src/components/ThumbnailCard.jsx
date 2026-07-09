@@ -60,6 +60,14 @@ export default function ThumbnailCard({ photo, onRemove, onDownload }) {
               />
             </>
           )}
+          {photo.convertedFromWebp && (
+            <span
+              title="This WebP was converted to JPEG so metadata can be embedded"
+              className="rounded bg-indigo-100 px-1.5 py-0.5 text-[10px] font-medium leading-none text-indigo-700"
+            >
+              Converted from WebP
+            </span>
+          )}
           {failed && (
             <span className="rounded bg-red-100 px-1.5 py-0.5 text-[10px] font-medium leading-none text-red-700">
               Failed

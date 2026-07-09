@@ -1,33 +1,54 @@
 import { useCallback, useState } from "react";
-import { validatePhotoFile } from "../utils/fileValidation";
+import { validatePhotoFile, isWebpFile } from "../utils/fileValidation";
+import { convertWebpToJpeg } from "../utils/convertWebpToJpeg";
 
 // Central store for uploaded photos. Each photo is:
-//   { id, file, name, size, previewUrl }
+//   { id, file, name, size, previewUrl, convertedFromWebp }
 // Later phases add metadata fields (GPS, keywords, optimized bytes) to these.
 export function usePhotos() {
   const [photos, setPhotos] = useState([]);
   const [errors, setErrors] = useState([]); // [{ name, message }]
 
   // Accepts a FileList (from drag-drop or the file picker), validates each
-  // file, adds the valid ones, and records any rejections as errors.
-  const addFiles = useCallback((fileList) => {
+  // file, and adds the valid ones. WebP files are silently converted to JPEG
+  // first (metadata can't be embedded into WebP) and flagged so the UI can
+  // show a "Converted from WebP" badge. Rejections are recorded as errors.
+  // Async because WebP conversion happens off the main pipeline via Canvas.
+  const addFiles = useCallback(async (fileList) => {
     const files = Array.from(fileList || []);
     const accepted = [];
     const rejected = [];
 
     for (const file of files) {
       const { valid, error } = validatePhotoFile(file);
-      if (valid) {
-        accepted.push({
-          id: crypto.randomUUID(),
-          file,
-          name: file.name,
-          size: file.size,
-          previewUrl: URL.createObjectURL(file),
-        });
-      } else {
+      if (!valid) {
         rejected.push({ name: file.name, message: error });
+        continue;
       }
+
+      let finalFile = file;
+      let convertedFromWebp = false;
+      if (isWebpFile(file)) {
+        try {
+          finalFile = await convertWebpToJpeg(file);
+          convertedFromWebp = true;
+        } catch {
+          rejected.push({
+            name: file.name,
+            message: "Couldn't convert this WebP image — try a different file.",
+          });
+          continue;
+        }
+      }
+
+      accepted.push({
+        id: crypto.randomUUID(),
+        file: finalFile,
+        name: finalFile.name,
+        size: finalFile.size,
+        previewUrl: URL.createObjectURL(finalFile),
+        convertedFromWebp,
+      });
     }
 
     if (accepted.length) setPhotos((prev) => [...prev, ...accepted]);

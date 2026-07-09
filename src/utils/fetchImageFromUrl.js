@@ -1,4 +1,4 @@
-import { ACCEPTED_MIME_TYPES, ACCEPTED_EXTENSIONS } from "../constants/config";
+import { JPEG_MIME_TYPES, JPEG_EXTENSIONS } from "../constants/config";
 
 // User-facing error messages. Thrown as Error instances so callers can show
 // err.message directly. Kept here so the wording stays in one place.
@@ -26,7 +26,7 @@ function filenameFromUrl(parsedUrl) {
   if (!name) name = "image.jpg";
 
   const lower = name.toLowerCase();
-  const hasJpegExt = ACCEPTED_EXTENSIONS.some((ext) => lower.endsWith(ext));
+  const hasJpegExt = JPEG_EXTENSIONS.some((ext) => lower.endsWith(ext));
   if (!hasJpegExt) name = `${name}.jpg`;
   return name;
 }
@@ -35,10 +35,10 @@ function filenameFromUrl(parsedUrl) {
 // MIME type; if the server sent no type, falls back to the URL's extension.
 function isJpegBlob(blob, parsedUrl) {
   const type = (blob.type || "").toLowerCase();
-  if (ACCEPTED_MIME_TYPES.includes(type)) return true;
+  if (JPEG_MIME_TYPES.includes(type)) return true;
   if (!type) {
     const lower = parsedUrl.pathname.toLowerCase();
-    return ACCEPTED_EXTENSIONS.some((ext) => lower.endsWith(ext));
+    return JPEG_EXTENSIONS.some((ext) => lower.endsWith(ext));
   }
   return false;
 }

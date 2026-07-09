@@ -43,7 +43,7 @@ export default function UploadZone({ onFiles }) {
       <input
         ref={inputRef}
         type="file"
-        accept="image/jpeg,.jpg,.jpeg"
+        accept="image/jpeg,image/webp,.jpg,.jpeg,.webp"
         multiple
         hidden
         onChange={handleChange}
@@ -71,7 +71,9 @@ export default function UploadZone({ onFiles }) {
       <p className="mt-1 text-sm text-slate-500">
         or <span className="text-brand-green underline">click to browse</span>
       </p>
-      <p className="mt-2 text-xs text-slate-400">JPEG photos only (.jpg, .jpeg)</p>
+      <p className="mt-2 text-xs text-slate-400">
+        JPEG &amp; WebP photos (.jpg, .jpeg, .webp)
+      </p>
     </div>
   );
 }

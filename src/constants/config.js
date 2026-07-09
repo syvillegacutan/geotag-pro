@@ -22,8 +22,23 @@ export const COLORS = {
 };
 
 // Photo upload rules
-export const ACCEPTED_MIME_TYPES = ["image/jpeg"];
-export const ACCEPTED_EXTENSIONS = [".jpg", ".jpeg"];
+
+// JPEG-only set — used by the web-URL import, which fetches only JPEGs.
+export const JPEG_MIME_TYPES = ["image/jpeg"];
+export const JPEG_EXTENSIONS = [".jpg", ".jpeg"];
+
+// The WebP MIME type. WebP uploads are accepted, then auto-converted to JPEG
+// (metadata can't be reliably embedded into WebP).
+export const WEBP_MIME_TYPE = "image/webp";
+export const WEBP_EXTENSION = ".webp";
+
+// Full set of formats accepted for upload (drag-drop / file picker).
+export const ACCEPTED_MIME_TYPES = [...JPEG_MIME_TYPES, WEBP_MIME_TYPE];
+export const ACCEPTED_EXTENSIONS = [...JPEG_EXTENSIONS, WEBP_EXTENSION];
+
+// JPEG quality used when converting WebP to JPEG (near-lossless).
+export const WEBP_JPEG_QUALITY = 0.95;
+
 export const MAX_FILE_SIZE_MB = 25;
 export const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
 
