@@ -7,6 +7,9 @@ import UploadErrors from "./components/UploadErrors";
 import ThumbnailGrid from "./components/ThumbnailGrid";
 import MapPicker from "./components/MapPicker";
 import LocationInputs from "./components/LocationInputs";
+import { useSeoMetadata } from "./hooks/useSeoMetadata";
+import BusinessInfoForm from "./components/BusinessInfoForm";
+import MetadataPreview from "./components/MetadataPreview";
 import { formatCoords } from "./utils/coords";
 
 // Placeholder for sections not yet built (replaced phase by phase).
@@ -34,6 +37,7 @@ export default function App() {
   } = usePhotos();
 
   const { location, setLocation } = useMapLocation();
+  const seo = useSeoMetadata();
 
   // Read existing GPS/keyword metadata for each uploaded photo.
   useExifData(photos, updatePhoto);
@@ -85,9 +89,25 @@ export default function App() {
           />
         </section>
 
-        <PlaceholderSection phase="Phase 5" title="Business info & SEO keywords">
-          Business name, service, city, and keywords.
-        </PlaceholderSection>
+        {/* Phase 5 — SEO metadata form (real) */}
+        <section className="space-y-4 rounded-lg border border-slate-200 bg-white p-6">
+          <h2 className="text-lg font-semibold text-brand-navy">
+            Business info &amp; SEO keywords
+          </h2>
+          <BusinessInfoForm
+            businessInfo={seo.businessInfo}
+            onField={seo.setField}
+          />
+          <MetadataPreview
+            metadata={seo.metadata}
+            onEditTitle={seo.setTitleOverride}
+            onEditDescription={seo.setDescriptionOverride}
+            onResetTitle={seo.resetTitle}
+            onResetDescription={seo.resetDescription}
+            isTitleEdited={seo.isTitleEdited}
+            isDescriptionEdited={seo.isDescriptionEdited}
+          />
+        </section>
         <PlaceholderSection phase="Phase 6 / 7" title="Optimize & download">
           Embed GPS + keywords, then download optimized photos.
         </PlaceholderSection>
