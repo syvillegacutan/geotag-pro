@@ -1,0 +1,21 @@
+@import "tailwindcss";
+
+/* GeoTag Pro brand colors — usable as Tailwind classes like bg-brand-navy, text-brand-green */
+@theme {
+  --color-brand-navy: #1a1a2e;
+  --color-brand-green: #22c55e;
+  --color-brand-green-hover: #16a34a;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background-color: #f8fafc; /* light slate page background */
+  color: #1a1a2e;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
