@@ -1,11 +1,18 @@
+import { useState } from "react";
 import { formatFileSize } from "../utils/formatFileSize";
 import MetadataBadge from "./MetadataBadge";
+import PhotoDetails from "./PhotoDetails";
 
-// One photo tile: preview image, filename, size, metadata badges, and a
-// remove (×) button.
+// One photo tile: preview image, filename, size, metadata badges, an
+// expandable before/after details panel, and a remove (×) button.
 export default function ThumbnailCard({ photo, onRemove }) {
+  const [showDetails, setShowDetails] = useState(false);
+
   const meta = photo.original; // undefined until metadata has been read
   const loading = !meta;
+  const optimized = !!photo.optimized;
+  const failed = !!photo.optimizeError;
+
   return (
     <div className="group relative overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
       <button
@@ -33,18 +40,42 @@ export default function ThumbnailCard({ photo, onRemove }) {
         <p className="text-xs text-slate-400">{formatFileSize(photo.size)}</p>
 
         <div className="mt-1.5 flex flex-wrap gap-1">
-          <MetadataBadge
-            label={meta?.hasGps ? "Has GPS" : "No GPS"}
-            active={meta?.hasGps}
-            loading={loading}
-          />
-          <MetadataBadge
-            label={meta?.hasKeywords ? "Has Keywords" : "No Keywords"}
-            active={meta?.hasKeywords}
-            loading={loading}
-          />
+          {optimized ? (
+            <>
+              <MetadataBadge label="GPS ✓" active loading={false} />
+              <MetadataBadge label="Keywords ✓" active loading={false} />
+            </>
+          ) : (
+            <>
+              <MetadataBadge
+                label={meta?.hasGps ? "Has GPS" : "No GPS"}
+                active={meta?.hasGps}
+                loading={loading}
+              />
+              <MetadataBadge
+                label={meta?.hasKeywords ? "Has Keywords" : "No Keywords"}
+                active={meta?.hasKeywords}
+                loading={loading}
+              />
+            </>
+          )}
+          {failed && (
+            <span className="rounded bg-red-100 px-1.5 py-0.5 text-[10px] font-medium leading-none text-red-700">
+              Failed
+            </span>
+          )}
         </div>
+
+        <button
+          type="button"
+          onClick={() => setShowDetails((s) => !s)}
+          className="mt-1.5 text-[11px] font-medium text-slate-500 hover:text-brand-navy"
+        >
+          {showDetails ? "▾ Hide details" : "▸ Details"}
+        </button>
       </div>
+
+      {showDetails && <PhotoDetails photo={photo} />}
     </div>
   );
 }

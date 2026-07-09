@@ -1,29 +1,19 @@
+import { useState } from "react";
 import { APP_NAME, APP_TAGLINE, STEPS } from "./constants/config";
 import { usePhotos } from "./hooks/usePhotos";
 import { useExifData } from "./hooks/useExifData";
 import { useMapLocation } from "./hooks/useMapLocation";
+import { useSeoMetadata } from "./hooks/useSeoMetadata";
+import { useOptimizer } from "./hooks/useOptimizer";
 import UploadZone from "./components/UploadZone";
 import UploadErrors from "./components/UploadErrors";
 import ThumbnailGrid from "./components/ThumbnailGrid";
 import MapPicker from "./components/MapPicker";
 import LocationInputs from "./components/LocationInputs";
-import { useSeoMetadata } from "./hooks/useSeoMetadata";
 import BusinessInfoForm from "./components/BusinessInfoForm";
 import MetadataPreview from "./components/MetadataPreview";
+import OptimizeButton from "./components/OptimizeButton";
 import { formatCoords } from "./utils/coords";
-
-// Placeholder for sections not yet built (replaced phase by phase).
-function PlaceholderSection({ phase, title, children }) {
-  return (
-    <section className="rounded-lg border-2 border-dashed border-slate-300 bg-white p-6">
-      <div className="mb-1 text-xs font-semibold uppercase tracking-wide text-brand-green">
-        {phase}
-      </div>
-      <h2 className="text-lg font-semibold text-brand-navy">{title}</h2>
-      <p className="mt-1 text-sm text-slate-500">{children}</p>
-    </section>
-  );
-}
 
 export default function App() {
   const {
@@ -41,6 +31,41 @@ export default function App() {
 
   // Read existing GPS/keyword metadata for each uploaded photo.
   useExifData(photos, updatePhoto);
+
+  const { isOptimizing, optimizeAll } = useOptimizer(
+    photos,
+    location,
+    seo.metadata,
+    updatePhoto
+  );
+  const [showOverwrite, setShowOverwrite] = useState(false);
+
+  // What must be true before optimizing (also drives the "missing" hints).
+  const hasBusinessName = seo.businessInfo.businessName.trim().length > 0;
+  const canOptimize = photos.length > 0 && !!location && hasBusinessName;
+
+  const missing = [];
+  if (photos.length === 0) missing.push("Upload at least one photo");
+  if (!location) missing.push("Select a location on the map");
+  if (!hasBusinessName) missing.push("Enter a business name");
+
+  const optimizedCount = photos.filter((p) => p.optimized).length;
+
+  function handleOptimizeClick() {
+    const anyTagged = photos.some(
+      (p) => p.original && (p.original.hasGps || p.original.hasKeywords)
+    );
+    if (anyTagged) {
+      setShowOverwrite(true);
+    } else {
+      optimizeAll();
+    }
+  }
+
+  function confirmOverwrite() {
+    setShowOverwrite(false);
+    optimizeAll();
+  }
 
   return (
     <div className="flex min-h-full flex-col">
@@ -108,9 +133,54 @@ export default function App() {
             isDescriptionEdited={seo.isDescriptionEdited}
           />
         </section>
-        <PlaceholderSection phase="Phase 6 / 7" title="Optimize & download">
-          Embed GPS + keywords, then download optimized photos.
-        </PlaceholderSection>
+        {/* Phase 6 — Optimize (download comes in Phase 7) */}
+        <section className="space-y-3 rounded-lg border border-slate-200 bg-white p-6">
+          <h2 className="text-lg font-semibold text-brand-navy">
+            Optimize &amp; download
+          </h2>
+
+          {showOverwrite && (
+            <div className="rounded-md border border-amber-300 bg-amber-50 p-3 text-sm text-amber-800">
+              <p className="font-medium">
+                Some photos already contain GPS or keyword data.
+              </p>
+              <p className="mt-1">
+                Optimizing will overwrite that existing data.
+              </p>
+              <div className="mt-2 flex gap-2">
+                <button
+                  type="button"
+                  onClick={confirmOverwrite}
+                  className="rounded bg-amber-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-amber-700"
+                >
+                  Overwrite &amp; optimize
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowOverwrite(false)}
+                  className="rounded border border-slate-300 px-3 py-1.5 text-xs font-medium text-slate-600 hover:bg-slate-50"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          )}
+
+          <OptimizeButton
+            canOptimize={canOptimize}
+            isOptimizing={isOptimizing}
+            missing={missing}
+            onClick={handleOptimizeClick}
+          />
+
+          {optimizedCount > 0 && (
+            <p className="text-sm font-medium text-green-700">
+              ✓ {optimizedCount} of {photos.length} photo
+              {photos.length === 1 ? "" : "s"} optimized. (Download comes in the
+              next step.)
+            </p>
+          )}
+        </section>
       </main>
 
       {/* Footer (built for real in Phase 8) */}
