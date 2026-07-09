@@ -27,6 +27,12 @@ export const ACCEPTED_EXTENSIONS = [".jpg", ".jpeg"];
 export const MAX_FILE_SIZE_MB = 25;
 export const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
 
+// "Very large batch" thresholds — a non-blocking warning appears when a batch
+// exceeds either of these, since all processing happens in the browser.
+export const BATCH_WARN_COUNT = 30;
+export const BATCH_WARN_MB = 200;
+export const BATCH_WARN_BYTES = BATCH_WARN_MB * 1024 * 1024;
+
 // Map defaults (centered on the USA until the user picks a location)
 export const MAP_DEFAULTS = {
   center: [39.8283, -98.5795], // geographic center of the contiguous USA
