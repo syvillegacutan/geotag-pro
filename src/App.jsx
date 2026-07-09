@@ -1,9 +1,13 @@
 import { APP_NAME, APP_TAGLINE, STEPS } from "./constants/config";
 import { usePhotos } from "./hooks/usePhotos";
 import { useExifData } from "./hooks/useExifData";
+import { useMapLocation } from "./hooks/useMapLocation";
 import UploadZone from "./components/UploadZone";
 import UploadErrors from "./components/UploadErrors";
 import ThumbnailGrid from "./components/ThumbnailGrid";
+import MapPicker from "./components/MapPicker";
+import LocationInputs from "./components/LocationInputs";
+import { formatCoords } from "./utils/coords";
 
 // Placeholder for sections not yet built (replaced phase by phase).
 function PlaceholderSection({ phase, title, children }) {
@@ -29,6 +33,8 @@ export default function App() {
     clearErrors,
   } = usePhotos();
 
+  const { location, setLocation } = useMapLocation();
+
   // Read existing GPS/keyword metadata for each uploaded photo.
   useExifData(photos, updatePhoto);
 
@@ -52,9 +58,20 @@ export default function App() {
 
       {/* Main content */}
       <main className="mx-auto grid w-full max-w-6xl flex-1 gap-4 p-6 md:grid-cols-2">
-        <PlaceholderSection phase="Phase 4" title="Location map">
-          Interactive map to pick your business location.
-        </PlaceholderSection>
+        {/* Phase 4 — Interactive map (real) */}
+        <section className="space-y-3 rounded-lg border border-slate-200 bg-white p-6">
+          <h2 className="text-lg font-semibold text-brand-navy">
+            Business location
+          </h2>
+          <MapPicker location={location} onPick={setLocation} />
+          <p className="text-sm text-slate-600">
+            Selected:{" "}
+            <span className="font-medium text-brand-navy">
+              {location ? formatCoords(location.lat, location.lng) : "none yet — click the map"}
+            </span>
+          </p>
+          <LocationInputs location={location} onSet={setLocation} />
+        </section>
 
         {/* Phase 2 — Photo upload system (real) */}
         <section className="space-y-3 rounded-lg border border-slate-200 bg-white p-6">
