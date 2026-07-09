@@ -7,9 +7,11 @@ import { writeMetadata } from "../utils/writeMetadata";
 // each badge progressively.
 export function useOptimizer(photos, location, metadata, updatePhoto) {
   const [isOptimizing, setIsOptimizing] = useState(false);
+  const [progress, setProgress] = useState({ done: 0, total: 0 });
 
   const optimizeAll = useCallback(async () => {
     setIsOptimizing(true);
+    setProgress({ done: 0, total: photos.length });
 
     const seoData = {
       title: metadata.title,
@@ -18,6 +20,7 @@ export function useOptimizer(photos, location, metadata, updatePhoto) {
       author: metadata.author,
     };
 
+    let done = 0;
     for (const photo of photos) {
       try {
         const { blob, bytes } = await writeMetadata(photo.file, {
@@ -37,10 +40,12 @@ export function useOptimizer(photos, location, metadata, updatePhoto) {
       } catch {
         updatePhoto(photo.id, { optimizeError: true });
       }
+      done += 1;
+      setProgress({ done, total: photos.length });
     }
 
     setIsOptimizing(false);
   }, [photos, location, metadata, updatePhoto]);
 
-  return { isOptimizing, optimizeAll };
+  return { isOptimizing, progress, optimizeAll };
 }

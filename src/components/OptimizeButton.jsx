@@ -1,7 +1,19 @@
 // The main call-to-action. Disabled until the required inputs exist; when
 // disabled it lists exactly what's still missing.
-export default function OptimizeButton({ canOptimize, isOptimizing, missing, onClick }) {
+export default function OptimizeButton({
+  canOptimize,
+  isOptimizing,
+  progress,
+  missing,
+  onClick,
+}) {
   const disabled = !canOptimize || isOptimizing;
+  const label =
+    isOptimizing && progress?.total
+      ? `Optimizing… (${progress.done}/${progress.total})`
+      : isOptimizing
+        ? "Optimizing…"
+        : "Optimize All Photos";
 
   return (
     <div>
@@ -15,7 +27,7 @@ export default function OptimizeButton({ canOptimize, isOptimizing, missing, onC
             : "bg-brand-green hover:bg-brand-green-hover"
         }`}
       >
-        {isOptimizing ? "Optimizing…" : "Optimize All Photos"}
+        {label}
       </button>
 
       {!canOptimize && missing.length > 0 && (

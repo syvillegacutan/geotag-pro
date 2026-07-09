@@ -1,4 +1,10 @@
-import { ACCEPTED_MIME_TYPES, ACCEPTED_EXTENSIONS } from "../constants/config";
+import {
+  ACCEPTED_MIME_TYPES,
+  ACCEPTED_EXTENSIONS,
+  MAX_FILE_SIZE_BYTES,
+  MAX_FILE_SIZE_MB,
+} from "../constants/config";
+import { formatFileSize } from "./formatFileSize";
 
 // Returns true only for JPEG photos.
 // We check the file's reported type first; if the browser reports no type
@@ -14,12 +20,17 @@ export function isJpegFile(file) {
 }
 
 // Validates a single file for upload. Returns { valid, error }.
-// (File-size limits are added later, in Phase 9.)
 export function validatePhotoFile(file) {
   if (!isJpegFile(file)) {
     return {
       valid: false,
       error: "Not a JPEG — only .jpg / .jpeg photos are supported.",
+    };
+  }
+  if (file.size > MAX_FILE_SIZE_BYTES) {
+    return {
+      valid: false,
+      error: `Too large (${formatFileSize(file.size)}) — max ${MAX_FILE_SIZE_MB} MB per photo.`,
     };
   }
   return { valid: true, error: null };

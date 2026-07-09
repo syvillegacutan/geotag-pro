@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { MapContainer, TileLayer, Marker, useMapEvents, useMap } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
@@ -39,8 +39,10 @@ function Recenter({ position }) {
 }
 
 export default function MapPicker({ location, onPick }) {
+  const [tileError, setTileError] = useState(false);
+
   return (
-    <div className="h-72 w-full overflow-hidden rounded-lg border border-slate-200">
+    <div className="relative h-72 w-full overflow-hidden rounded-lg border border-slate-200">
       <MapContainer
         center={MAP_DEFAULTS.center}
         zoom={MAP_DEFAULTS.zoom}
@@ -50,11 +52,19 @@ export default function MapPicker({ location, onPick }) {
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          eventHandlers={{ tileerror: () => setTileError(true) }}
         />
         <ClickHandler onPick={onPick} />
         <Recenter position={location} />
         {location && <Marker position={[location.lat, location.lng]} />}
       </MapContainer>
+
+      {tileError && (
+        <div className="pointer-events-none absolute inset-x-0 top-0 z-[1000] bg-amber-50/95 px-3 py-2 text-center text-xs text-amber-800">
+          Map tiles couldn&apos;t load — check your connection. You can still
+          enter coordinates or a Google Maps link below.
+        </div>
+      )}
     </div>
   );
 }

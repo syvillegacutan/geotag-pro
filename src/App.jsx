@@ -6,6 +6,7 @@ import { useSeoMetadata } from "./hooks/useSeoMetadata";
 import { useOptimizer } from "./hooks/useOptimizer";
 import Header from "./components/Header";
 import StepBar from "./components/StepBar";
+import ErrorBoundary from "./components/ErrorBoundary";
 import Footer from "./components/Footer";
 import LeadGenCTA from "./components/LeadGenCTA";
 import UploadZone from "./components/UploadZone";
@@ -49,7 +50,7 @@ export default function App() {
   // Read existing GPS/keyword metadata for each uploaded photo.
   useExifData(photos, updatePhoto);
 
-  const { isOptimizing, optimizeAll } = useOptimizer(
+  const { isOptimizing, progress, optimizeAll } = useOptimizer(
     photos,
     location,
     seo.metadata,
@@ -68,6 +69,7 @@ export default function App() {
   if (!hasBusinessName) missing.push("Enter a business name");
 
   const optimizedCount = photos.filter((p) => p.optimized).length;
+  const failedCount = photos.filter((p) => p.optimizeError).length;
 
   // Drives the highlighted step in the progress bar.
   let currentStep = 1;
@@ -114,7 +116,16 @@ export default function App() {
           <div className="space-y-4">
             <Section title="Business location">
               <div className="space-y-3">
-                <MapPicker location={location} onPick={setLocation} />
+                <ErrorBoundary
+                  fallback={
+                    <div className="rounded-lg border border-amber-300 bg-amber-50 p-4 text-sm text-amber-800">
+                      The map couldn&apos;t load. You can still set your location
+                      using the coordinate fields or Google Maps link below.
+                    </div>
+                  }
+                >
+                  <MapPicker location={location} onPick={setLocation} />
+                </ErrorBoundary>
                 <p className="text-sm text-slate-600">
                   Selected:{" "}
                   <span className="font-medium text-brand-navy">
@@ -197,6 +208,7 @@ export default function App() {
               <OptimizeButton
                 canOptimize={canOptimize}
                 isOptimizing={isOptimizing}
+                progress={progress}
                 missing={missing}
                 onClick={handleOptimizeClick}
               />
@@ -206,6 +218,13 @@ export default function App() {
                 onDownloadAll={handleDownloadAll}
               />
             </div>
+
+            {failedCount > 0 && (
+              <p className="text-sm font-medium text-red-600">
+                {failedCount} photo{failedCount === 1 ? "" : "s"} couldn&apos;t
+                be optimized and {failedCount === 1 ? "was" : "were"} skipped.
+              </p>
+            )}
 
             {optimizedCount > 0 && (
               <>
