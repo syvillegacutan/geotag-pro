@@ -1,6 +1,7 @@
 import { useCallback, useState } from "react";
 import { validatePhotoFile, isWebpFile } from "../utils/fileValidation";
 import { convertWebpToJpeg } from "../utils/convertWebpToJpeg";
+import { uniqueId } from "../utils/uniqueId";
 
 // Central store for uploaded photos. Each photo is:
 //   { id, file, name, size, previewUrl, convertedFromWebp }
@@ -42,7 +43,7 @@ export function usePhotos() {
       }
 
       accepted.push({
-        id: crypto.randomUUID(),
+        id: uniqueId(),
         file: finalFile,
         name: finalFile.name,
         size: finalFile.size,
