@@ -1,15 +1,21 @@
 import ThumbnailCard from "./ThumbnailCard";
+import { formatFileSize } from "../utils/formatFileSize";
 
-// Displays all uploaded photos as a responsive grid of thumbnails,
-// with a header showing the count and a "Clear all" button.
+// Displays all uploaded photos as a responsive grid of thumbnails, with a
+// header showing the count + combined file size and a "Clear all" button.
 export default function ThumbnailGrid({ photos, onRemove, onClearAll, onDownload }) {
   if (photos.length === 0) return null;
+
+  const totalBytes = photos.reduce((sum, p) => sum + (p.size || 0), 0);
 
   return (
     <div>
       <div className="mb-2 flex items-center justify-between">
         <span className="text-sm font-medium text-brand-navy">
-          {photos.length} photo{photos.length === 1 ? "" : "s"} uploaded
+          {photos.length} photo{photos.length === 1 ? "" : "s"}{" "}
+          <span className="font-normal text-slate-500">
+            · {formatFileSize(totalBytes)} total
+          </span>
         </span>
         <button
           type="button"
