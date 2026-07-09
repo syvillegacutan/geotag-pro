@@ -2,7 +2,7 @@ import ThumbnailCard from "./ThumbnailCard";
 
 // Displays all uploaded photos as a responsive grid of thumbnails,
 // with a header showing the count and a "Clear all" button.
-export default function ThumbnailGrid({ photos, onRemove, onClearAll }) {
+export default function ThumbnailGrid({ photos, onRemove, onClearAll, onDownload }) {
   if (photos.length === 0) return null;
 
   return (
@@ -22,7 +22,12 @@ export default function ThumbnailGrid({ photos, onRemove, onClearAll }) {
 
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
         {photos.map((photo) => (
-          <ThumbnailCard key={photo.id} photo={photo} onRemove={onRemove} />
+          <ThumbnailCard
+            key={photo.id}
+            photo={photo}
+            onRemove={onRemove}
+            onDownload={onDownload}
+          />
         ))}
       </div>
     </div>

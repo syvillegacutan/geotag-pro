@@ -13,7 +13,9 @@ import LocationInputs from "./components/LocationInputs";
 import BusinessInfoForm from "./components/BusinessInfoForm";
 import MetadataPreview from "./components/MetadataPreview";
 import OptimizeButton from "./components/OptimizeButton";
+import DownloadBar from "./components/DownloadBar";
 import { formatCoords } from "./utils/coords";
+import { downloadBlob, downloadZip } from "./utils/download";
 
 export default function App() {
   const {
@@ -39,6 +41,7 @@ export default function App() {
     updatePhoto
   );
   const [showOverwrite, setShowOverwrite] = useState(false);
+  const [isZipping, setIsZipping] = useState(false);
 
   // What must be true before optimizing (also drives the "missing" hints).
   const hasBusinessName = seo.businessInfo.businessName.trim().length > 0;
@@ -65,6 +68,19 @@ export default function App() {
   function confirmOverwrite() {
     setShowOverwrite(false);
     optimizeAll();
+  }
+
+  async function handleDownloadAll() {
+    setIsZipping(true);
+    try {
+      await downloadZip(photos);
+    } finally {
+      setIsZipping(false);
+    }
+  }
+
+  function handleDownloadOne(photo) {
+    if (photo.optimized) downloadBlob(photo.optimized.blob, photo.name);
   }
 
   return (
@@ -111,6 +127,7 @@ export default function App() {
             photos={photos}
             onRemove={removePhoto}
             onClearAll={clearAll}
+            onDownload={handleDownloadOne}
           />
         </section>
 
@@ -176,8 +193,29 @@ export default function App() {
           {optimizedCount > 0 && (
             <p className="text-sm font-medium text-green-700">
               ✓ {optimizedCount} of {photos.length} photo
-              {photos.length === 1 ? "" : "s"} optimized. (Download comes in the
-              next step.)
+              {photos.length === 1 ? "" : "s"} optimized.
+            </p>
+          )}
+
+          <DownloadBar
+            optimizedCount={optimizedCount}
+            isZipping={isZipping}
+            onDownloadAll={handleDownloadAll}
+          />
+
+          {optimizedCount > 0 && (
+            <p className="text-xs text-slate-500">
+              Tip: verify the embedded data by uploading a downloaded photo to a
+              free viewer like{" "}
+              <a
+                href="https://exifdata.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-brand-green underline"
+              >
+                exifdata.com
+              </a>
+              .
             </p>
           )}
         </section>

@@ -4,8 +4,9 @@ import MetadataBadge from "./MetadataBadge";
 import PhotoDetails from "./PhotoDetails";
 
 // One photo tile: preview image, filename, size, metadata badges, an
-// expandable before/after details panel, and a remove (×) button.
-export default function ThumbnailCard({ photo, onRemove }) {
+// expandable before/after details panel, a per-photo download (once
+// optimized), and a remove (×) button.
+export default function ThumbnailCard({ photo, onRemove, onDownload }) {
   const [showDetails, setShowDetails] = useState(false);
 
   const meta = photo.original; // undefined until metadata has been read
@@ -66,13 +67,24 @@ export default function ThumbnailCard({ photo, onRemove }) {
           )}
         </div>
 
-        <button
-          type="button"
-          onClick={() => setShowDetails((s) => !s)}
-          className="mt-1.5 text-[11px] font-medium text-slate-500 hover:text-brand-navy"
-        >
-          {showDetails ? "▾ Hide details" : "▸ Details"}
-        </button>
+        <div className="mt-1.5 flex items-center justify-between">
+          <button
+            type="button"
+            onClick={() => setShowDetails((s) => !s)}
+            className="text-[11px] font-medium text-slate-500 hover:text-brand-navy"
+          >
+            {showDetails ? "▾ Hide details" : "▸ Details"}
+          </button>
+          {optimized && (
+            <button
+              type="button"
+              onClick={() => onDownload(photo)}
+              className="text-[11px] font-medium text-brand-green hover:underline"
+            >
+              ⬇ Download
+            </button>
+          )}
+        </div>
       </div>
 
       {showDetails && <PhotoDetails photo={photo} />}
