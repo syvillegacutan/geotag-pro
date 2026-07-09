@@ -1,8 +1,11 @@
 import { formatFileSize } from "../utils/formatFileSize";
+import MetadataBadge from "./MetadataBadge";
 
-// One photo tile: preview image, filename, size, and a remove (×) button.
-// Metadata badges (Has GPS / Has Keywords) are added in Phase 3.
+// One photo tile: preview image, filename, size, metadata badges, and a
+// remove (×) button.
 export default function ThumbnailCard({ photo, onRemove }) {
+  const meta = photo.original; // undefined until metadata has been read
+  const loading = !meta;
   return (
     <div className="group relative overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
       <button
@@ -28,6 +31,19 @@ export default function ThumbnailCard({ photo, onRemove }) {
           {photo.name}
         </p>
         <p className="text-xs text-slate-400">{formatFileSize(photo.size)}</p>
+
+        <div className="mt-1.5 flex flex-wrap gap-1">
+          <MetadataBadge
+            label={meta?.hasGps ? "Has GPS" : "No GPS"}
+            active={meta?.hasGps}
+            loading={loading}
+          />
+          <MetadataBadge
+            label={meta?.hasKeywords ? "Has Keywords" : "No Keywords"}
+            active={meta?.hasKeywords}
+            loading={loading}
+          />
+        </div>
       </div>
     </div>
   );

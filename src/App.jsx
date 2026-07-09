@@ -1,5 +1,6 @@
 import { APP_NAME, APP_TAGLINE, STEPS } from "./constants/config";
 import { usePhotos } from "./hooks/usePhotos";
+import { useExifData } from "./hooks/useExifData";
 import UploadZone from "./components/UploadZone";
 import UploadErrors from "./components/UploadErrors";
 import ThumbnailGrid from "./components/ThumbnailGrid";
@@ -18,8 +19,18 @@ function PlaceholderSection({ phase, title, children }) {
 }
 
 export default function App() {
-  const { photos, errors, addFiles, removePhoto, clearAll, clearErrors } =
-    usePhotos();
+  const {
+    photos,
+    errors,
+    addFiles,
+    updatePhoto,
+    removePhoto,
+    clearAll,
+    clearErrors,
+  } = usePhotos();
+
+  // Read existing GPS/keyword metadata for each uploaded photo.
+  useExifData(photos, updatePhoto);
 
   return (
     <div className="flex min-h-full flex-col">

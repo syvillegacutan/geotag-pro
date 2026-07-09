@@ -35,6 +35,13 @@ export function usePhotos() {
     return { addedCount: accepted.length, rejectedCount: rejected.length };
   }, []);
 
+  // Merges a patch into one photo (used to attach metadata, optimized bytes, etc.)
+  const updatePhoto = useCallback((id, patch) => {
+    setPhotos((prev) =>
+      prev.map((p) => (p.id === id ? { ...p, ...patch } : p))
+    );
+  }, []);
+
   const removePhoto = useCallback((id) => {
     setPhotos((prev) => {
       const target = prev.find((p) => p.id === id);
@@ -53,5 +60,13 @@ export function usePhotos() {
 
   const clearErrors = useCallback(() => setErrors([]), []);
 
-  return { photos, errors, addFiles, removePhoto, clearAll, clearErrors };
+  return {
+    photos,
+    errors,
+    addFiles,
+    updatePhoto,
+    removePhoto,
+    clearAll,
+    clearErrors,
+  };
 }
