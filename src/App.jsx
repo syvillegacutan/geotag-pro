@@ -18,6 +18,7 @@ import BusinessInfoForm from "./components/BusinessInfoForm";
 import MetadataPreview from "./components/MetadataPreview";
 import OptimizeButton from "./components/OptimizeButton";
 import DownloadBar from "./components/DownloadBar";
+import HelpVerify from "./components/HelpVerify";
 import { formatCoords } from "./utils/coords";
 import { downloadBlob, downloadZip } from "./utils/download";
 
@@ -249,6 +250,10 @@ export default function App() {
             )}
           </div>
         </Section>
+
+        <div className="mt-4">
+          <HelpVerify />
+        </div>
       </main>
 
       <LeadGenCTA />
