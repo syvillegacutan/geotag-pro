@@ -10,6 +10,7 @@ import ErrorBoundary from "./components/ErrorBoundary";
 import Footer from "./components/Footer";
 import LeadGenCTA from "./components/LeadGenCTA";
 import UploadZone from "./components/UploadZone";
+import UrlImport from "./components/UrlImport";
 import UploadErrors from "./components/UploadErrors";
 import ThumbnailGrid from "./components/ThumbnailGrid";
 import MapPicker from "./components/MapPicker";
@@ -163,6 +164,7 @@ export default function App() {
             <Section title="Upload photos">
               <div className="space-y-3">
                 <UploadZone onFiles={addFiles} />
+                <UrlImport onFile={(file) => addFiles([file])} />
                 <UploadErrors errors={errors} onDismiss={clearErrors} />
                 <ThumbnailGrid
                   photos={photos}
