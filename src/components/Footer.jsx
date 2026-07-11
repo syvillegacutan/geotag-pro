@@ -20,6 +20,15 @@ export default function Footer() {
           </a>{" "}
           ·{" "}
           <a
+            href="https://syseolab.com/tools/serp/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className={linkClass}
+          >
+            SERP Pro
+          </a>{" "}
+          ·{" "}
+          <a
             href="https://syseolab.com/tools"
             target="_blank"
             rel="noopener noreferrer"
