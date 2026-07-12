@@ -38,6 +38,15 @@ export default function Footer() {
           </a>{" "}
           ·{" "}
           <a
+            href="https://syseolab.com/tools/local-seo-score/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className={linkClass}
+          >
+            Local SEO Score
+          </a>{" "}
+          ·{" "}
+          <a
             href="https://syseolab.com/tools"
             target="_blank"
             rel="noopener noreferrer"
