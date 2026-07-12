@@ -47,6 +47,15 @@ export default function Footer() {
           </a>{" "}
           ·{" "}
           <a
+            href="https://syseolab.com/tools/webp/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className={linkClass}
+          >
+            WebP Pro
+          </a>{" "}
+          ·{" "}
+          <a
             href="https://syseolab.com/tools"
             target="_blank"
             rel="noopener noreferrer"
