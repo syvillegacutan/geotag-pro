@@ -29,6 +29,15 @@ export default function Footer() {
           </a>{" "}
           ·{" "}
           <a
+            href="https://syseolab.com/tools/exif/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className={linkClass}
+          >
+            EXIF Pro
+          </a>{" "}
+          ·{" "}
+          <a
             href="https://syseolab.com/tools"
             target="_blank"
             rel="noopener noreferrer"
