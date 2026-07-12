@@ -56,6 +56,15 @@ export default function Footer() {
           </a>{" "}
           ·{" "}
           <a
+            href="https://syseolab.com/tools/content/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className={linkClass}
+          >
+            Content Pro
+          </a>{" "}
+          ·{" "}
+          <a
             href="https://syseolab.com/tools"
             target="_blank"
             rel="noopener noreferrer"
