@@ -74,6 +74,15 @@ export default function Footer() {
           </a>{" "}
           ·{" "}
           <a
+            href="https://syseolab.com/tools/ai-readiness/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className={linkClass}
+          >
+            AI Search Readiness
+          </a>{" "}
+          ·{" "}
+          <a
             href="https://syseolab.com/tools"
             target="_blank"
             rel="noopener noreferrer"
