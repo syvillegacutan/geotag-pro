@@ -65,6 +65,15 @@ export default function Footer() {
           </a>{" "}
           ·{" "}
           <a
+            href="https://syseolab.com/tools/rename/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className={linkClass}
+          >
+            Rename Pro
+          </a>{" "}
+          ·{" "}
+          <a
             href="https://syseolab.com/tools"
             target="_blank"
             rel="noopener noreferrer"
